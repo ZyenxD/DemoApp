@@ -1,0 +1,31 @@
+<h2>
+  {{title}}
+</h2>
+<div>
+  <a routerLink="insert" > add product</a>
+</div>
+<ng-template #loading>
+  <h2>
+    LOADING PRODUCTS....
+  </h2>
+</ng-template>
+
+<!-- dont load anything until data is obtain, then asing list to product,
+   if list isn't load show the #loading template -->
+<ul class="products" *ngIf="products$ | async as products; else loading">
+  <!-- if something migth be undefiend 
+    use this "?" it helps to valudate if a value is undefined:
+   -->
+  <li *ngFor="let product of products | slice:start:end" [class.discontinued]="product.discontinued" (click)="onSelect(product)"
+    [class.selected]="product.name == selectedProduct?.name">
+    <span class="name">{{product.name | uppercase}}</span>
+    <span class="description">{{product.description}}</span>
+    <span class="price">{{product.price | currency:'DOP':'symbol-narrow':'.2'}}</span>
+  </li>
+</ul>
+<div>
+    <button [disabled]="start==0" (click)="prevPage()" >Previos Page</button>
+    <!--(products$ | async) this gime me an array -->
+    Page {{(start/pageSize)+1}}
+    <button [disabled]="(products$ | async)?.length <= end"(click)="nextPage()" >Next Page</button>
+<div>
